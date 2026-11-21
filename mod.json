@@ -1,0 +1,12 @@
+
+{
+  "geode": "5.11.2",
+  "gd": {
+    "android": "2.208"
+  },
+  "id": "ayamtayamenak.yt-auto-deco",
+  "name": "YT Auto Deco",
+  "version": "1.0.0",
+  "developer": "Ayamtayamenak",
+  "description": "Automatic level decoration with 33 styles."
+}
