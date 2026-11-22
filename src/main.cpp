@@ -1,39 +1,49 @@
 
 #include <Geode/Geode.hpp>
-#include <Geode/modify/LevelEditorLayer.hpp>
+#include <Geode/modify/EditorUI.hpp>
 
 using namespace geode::prelude;
 
-class $modify(YTAutoDecoEditor, LevelEditorLayer) {
-    bool init(GJGameLevel* level, bool p1) {
-        if (!LevelEditorLayer::init(level, p1))
+class $modify(YTAutoDeco, EditorUI) {
+    bool init(LevelEditorLayer* editorLayer) {
+        if (!EditorUI::init(editorLayer))
             return false;
 
-        auto sprite = CCSprite::createWithSpriteFrameName("GJ_button_01.png");
+        auto winSize = CCDirector::get()->getWinSize();
 
-        if (!sprite)
-            return true;
+        auto buttonSprite = ButtonSprite::create(
+            "YT",
+            "goldFont.fnt",
+            "GJ_button_01.png",
+            0.8f
+        );
 
         auto button = CCMenuItemSpriteExtra::create(
-            sprite,
+            buttonSprite,
             this,
-            menu_selector(YTAutoDecoEditor::onYTButton)
+            menu_selector(YTAutoDeco::onYTClick)
         );
 
         auto menu = CCMenu::create();
         menu->addChild(button);
         menu->setPosition({0, 0});
 
-        button->setPosition({35, 35});
-        addChild(menu, 100);
+        button->setPosition({
+            45.f,
+            winSize.height - 45.f
+        });
+
+        this->addChild(menu, 999);
+
+        log::info("YT Auto Deco button created!");
 
         return true;
     }
 
-    void onYTButton(CCObject*) {
+    void onYTClick(CCObject*) {
         FLAlertLayer::create(
             "YT Auto Deco",
-            "Welcome to YT Auto Deco!",
+            "The YT button is working!",
             "OK"
         )->show();
     }
