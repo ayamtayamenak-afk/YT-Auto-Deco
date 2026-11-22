@@ -4,38 +4,62 @@
 
 using namespace geode::prelude;
 
-class $modify(YTAutoDeco, EditorUI) {
+class $modify(YTAutoDecoEditorUI, EditorUI) {
     bool init(LevelEditorLayer* editorLayer) {
         if (!EditorUI::init(editorLayer))
             return false;
 
-        auto winSize = CCDirector::get()->getWinSize();
+        constexpr float R = 20.f;
 
-        auto buttonSprite = ButtonSprite::create(
-            "YT",
-            "goldFont.fnt",
-            "GJ_button_01.png",
-            0.8f
+        auto bg = CCNode::create();
+        bg->setContentSize({R * 2, R * 2});
+
+        auto draw = CCDrawNode::create();
+
+        draw->drawCircle(
+            {R, R},
+            R - 1.5f,
+            {0.85f, 0.10f, 0.10f, 1.f},
+            2.5f,
+            {1.f, 1.f, 1.f, 1.f},
+            48
         );
 
-        auto button = CCMenuItemSpriteExtra::create(
-            buttonSprite,
+        bg->addChild(draw);
+
+        auto label = CCLabelBMFont::create("YT", "bigFont.fnt");
+        label->setScale(0.55f);
+        label->setPosition({R, R + 1});
+        bg->addChild(label);
+
+        auto btn = CCMenuItemSpriteExtra::create(
+            bg,
             this,
-            menu_selector(YTAutoDeco::onYTClick)
+            menu_selector(YTAutoDecoEditorUI::onYTClick)
         );
 
         auto menu = CCMenu::create();
-        menu->addChild(button);
-        menu->setPosition({0, 0});
+        menu->addChild(btn);
+        this->addChild(menu);
 
-        button->setPosition({
-            45.f,
-            winSize.height - 45.f
-        });
+        auto winSize = CCDirector::get()->getWinSize();
 
-        this->addChild(menu, 999);
+        CCPoint pos = ccp(95.f, winSize.height / 2 + 75.f);
 
-        log::info("YT Auto Deco button created!");
+        if (auto playback = this->getChildByID("playback-menu")) {
+            if (auto music = playback->getChildByID("music-playback-button")) {
+                auto world = playback->convertToWorldSpace(music->getPosition());
+
+                pos = ccp(
+                    world.x + music->getScaledContentWidth() / 2 + 32.f,
+                    world.y
+                );
+            }
+        }
+
+        menu->setPosition(pos);
+
+        log::info("YT Auto Deco button initialized!");
 
         return true;
     }
@@ -43,7 +67,7 @@ class $modify(YTAutoDeco, EditorUI) {
     void onYTClick(CCObject*) {
         FLAlertLayer::create(
             "YT Auto Deco",
-            "The YT button is working!",
+            "The red YT button is working!",
             "OK"
         )->show();
     }
